@@ -64,7 +64,12 @@ namespace CourseProfessorAllocation
             courses.Add(new Course
             {
                 CourseId = 10,
-                CourseName = "Computer Security-I"
+                CourseName = "Advance Operating System"
+            });
+            courses.Add(new Course
+            {
+                CourseId = 11,
+                CourseName = "Internet of Things"
             });
             return courses;
         }

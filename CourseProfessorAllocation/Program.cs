@@ -10,6 +10,7 @@ namespace CourseProfessorAllocation
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
