@@ -15,11 +15,14 @@ namespace CourseProfessorAllocation
         MyDb db = new MyDb();
         Dictionary<int, Dictionary<int, List<int>>> mainDic = new Dictionary<int, Dictionary<int, List<int>>>();
         Dictionary<int, Dictionary<int, int>> courseTopicDic;
+        Dictionary<int, Dictionary<int, int>> pfDict;
+        Dictionary<int, int> ignoreList = new Dictionary<int, int>();
         public Analyser()
         {
             ListGenerator();
             CreatProfessorHash();
             courseTopicDic = CreateCourseDictionary();
+            pfDict = CreateProfessorsDictionary();
         }
         public void ListGenerator()
         {
@@ -193,42 +196,48 @@ namespace CourseProfessorAllocation
             int matchPoint = 0;
             int listIndex = 0;
             int patternIndex = 0;
-            while (sourceList.Count > listIndex && sourceList[listIndex] <= patternList[patternList.Count - 1] && patternIndex < patternList.Count)
+            if (sourceList.Count>0 && patternList.Count>0)
             {
-                if (sourceList[listIndex] == pattern[patternIndex])
+                while (sourceList.Count > listIndex && sourceList[listIndex] <= patternList[patternList.Count - 1] && patternIndex < patternList.Count)
                 {
-                    matchPoint++;
-                    listIndex++;
-                    patternIndex++;
-                    ans.Add(sourceList[listIndex]);
-                }
-                else if (sourceList[listIndex] < pattern[patternIndex])
-                {
-                    listIndex++;
-                }
-                else
-                {
-                    patternIndex++;
+                    if (sourceList[listIndex] == patternList[patternIndex])
+                    {
+                        ans.Add(sourceList[listIndex]);
+                        matchPoint++;
+                        listIndex++;
+                        patternIndex++;
+                    }
+                    else if (sourceList[listIndex] < patternList[patternIndex])
+                    {
+                        listIndex++;
+                    }
+                    else
+                    {
+                        patternIndex++;
+                    }
                 }
             }
+           
             return ans;
         }
-        public int GetProfessorForCourse(int courseID)
+        public List<int> GetProfessorForCourse(int courseID)
         {
-            int max = 0;
-
-            GetMax(courseID, 5);
+            List<int> max = new List<int>();
+            max.Add(0);
+            max.Add(0);
+            max = GetMax(max, courseID, 5);
 
 
             return max;
         }
 
-        public int GetMax(int courseID, int expLevel)
+        public List<int> GetMax(List<int> max, int courseID, int expLevel)
         {
-            int max = 0;
+
             Dictionary<int, int> topics = courseTopicDic[courseID];
             Dictionary<int, List<int>> expDic = new Dictionary<int, List<int>>();
             int index = 0;
+
             int tempExpLevel = expLevel;
             List<int> lst1;
             List<int> lst2;
@@ -237,22 +246,41 @@ namespace CourseProfessorAllocation
             var key2 = topics.Keys.ElementAt(1);
 
             expDic = mainDic[tempExpLevel];
-            while (!expDic.ContainsKey(key1) && tempExpLevel > 0)
+            while (!expDic.ContainsKey(key1) && tempExpLevel > 2)
             {
-                --tempExpLevel;
+
                 expDic = mainDic[tempExpLevel];
+                --tempExpLevel;
             }
             lst1 = expDic[key1];
-
+           
             expDic = mainDic[expLevel];
             tempExpLevel = expLevel;
-            while (!expDic.ContainsKey(key2) && tempExpLevel > 0)
+            while (!expDic.ContainsKey(key2) && tempExpLevel > 2)
             {
-                --tempExpLevel;
+
                 expDic = mainDic[tempExpLevel];
+                --tempExpLevel;
             }
             lst2 = expDic[key2];
+            for (int i = 0; i < Math.Max(lst1.Count, lst2.Count); i++)
+            {
 
+                if (i < lst1.Count)
+                {
+                    if (ignoreList.ContainsKey(lst1[i]))
+                    {
+                        lst1.Remove(lst1[i]);
+                    }
+                }
+                if (i < lst2.Count)
+                {
+                    if (ignoreList.ContainsKey(lst2[i]))
+                    {
+                        lst2.Remove(lst2[i]);
+                    }
+                }
+            }
             List<int> common = GetCommonElements(lst1, lst2);
 
             if (common.Count > 0)
@@ -261,54 +289,65 @@ namespace CourseProfessorAllocation
                 for (int i = 0; i < commonLength; i++)
                 {
                     int tempMax = CalculatePerc(common[i], topics);
-                    if (tempMax > max)
+                    if (tempMax > max[1])
                     {
-                        max = tempMax;
+                        max[1] = tempMax;
+                        max[0] = common[i];
                     }
                 }
             }
 
             common = lst1.Concat(lst2).ToList();
-            index = common.Count-1;
-            while ((max / 100) < 70 && index>=0)
+            index = 0;
+            while (index < common.Count)
             {
                 int tempMax = 0;
                 tempMax = CalculatePerc(common[index], topics);
-                if (tempMax > max)
+                if (tempMax > max[1])
                 {
-                    max = tempMax;
+                    max[1] = tempMax;
+                    max[0] = common[index];
                 }
-                index--;
-                
+                index++;
             }
 
-            if ((max / 100) < 70)
+            if ((max[1] / 100) < 70 && expLevel > 3)
             {
-                GetMax(courseID, expLevel--);
+                max = GetMax(max, courseID, --expLevel);
+               
             }
-            return max/100;
+            else
+            {
+                pfDict.Remove(max[1]);
+                if (!ignoreList.ContainsKey(max[0]))
+                {
+                    ignoreList.Add(max[0], max[0]);
+                }
+                
+            }
+            return max;
         }
+     
 
         public int CalculatePerc(int profId, Dictionary<int, int> topics)
         {
             int matchPercentage = 0;
-
-
-            Dictionary<int, Dictionary<int, int>> pfDict = CreateProfessorsDictionary();
             Dictionary<int, int> ptDic;
-            ptDic = pfDict[profId];
-
-            foreach (var key in topics.Keys)
-            {
-                if (ptDic.ContainsKey(key))
+           
+                ptDic = pfDict[profId];
+                foreach (var key in topics.Keys)
                 {
-                    int exp = ptDic[key];
-                    int per = topics[key];
+                    if (ptDic.ContainsKey(key))
+                    {
+                        int exp = ptDic[key];
+                        int per = topics[key];
 
-                    matchPercentage = ((exp * per) / 5 * 100) + matchPercentage;
-                }
+                        matchPercentage = ((exp * per) / 5 * 100) + matchPercentage;
+                    }
 
-            }
+               }
+            
+
 
 
             return matchPercentage;

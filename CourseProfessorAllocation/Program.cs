@@ -48,9 +48,13 @@ namespace CourseProfessorAllocation
             //}
 
             Dictionary<int, Dictionary<int, int>> dic = analyser.CreateCourseDictionary();
-            int courseID = 1;
-
-            analyser.GetProfessorForCourse(courseID);
+            List<int> profPerList = new List<int>();
+            for (int courseID = 1; courseID < 12; courseID++)
+            {
+                 profPerList = analyser.GetProfessorForCourse(courseID);
+                Console.WriteLine("Course Id :{0} Professor {1} Percentage : {2}", courseID, profPerList[0], profPerList[1]/100);
+            }
+           
 
             Console.ReadLine();
         }
