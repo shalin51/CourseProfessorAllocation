@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace CourseProfessorAllocation
 {
-    public class CourseTopic
+    public class Node
     {
-        public int CourseId { get; set; }
-        public int TopicId { get; set; }
-        public int Percentage { get; set; }
-      
+        public Node LeftChild { get; set; }
+        public Node  RightChild { get; set; }
+        public int value { get; set; }
+
     }
 }

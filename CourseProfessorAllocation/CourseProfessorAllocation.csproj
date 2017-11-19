@@ -42,9 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyser.cs" />
+    <Compile Include="BST.cs" />
     <Compile Include="Course.cs" />
     <Compile Include="CourseTopic.cs" />
     <Compile Include="Expertise.cs" />
+    <Compile Include="MyDb.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Professor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
