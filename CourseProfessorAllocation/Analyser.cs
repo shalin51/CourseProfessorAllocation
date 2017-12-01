@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace CourseProfessorAllocation
 {
+    /// <summary>
+    /// Analyser class to generate 
+    /// </summary>
     public class Analyser
     {
-
         List<List<int>> arrList = new List<List<int>>();
         List<int> pattern = new List<int> { 6, 9, 12, 18 };
         MyDb db = new MyDb();
@@ -17,6 +19,10 @@ namespace CourseProfessorAllocation
         Dictionary<int, Dictionary<int, int>> courseTopicDic;
         Dictionary<int, Dictionary<int, int>> pfDict;
         Dictionary<int, int> ignoreList = new Dictionary<int, int>();
+
+        /// <summary>
+        /// Constructor method to initialize methods and variables 
+        /// </summary>
         public Analyser()
         {
             ListGenerator();
@@ -24,6 +30,10 @@ namespace CourseProfessorAllocation
             courseTopicDic = CreateCourseDictionary();
             pfDict = CreateProfessorsDictionary();
         }
+
+        /// <summary>
+        /// Method to generate array list
+        /// </summary>
         public void ListGenerator()
         {
             arrList.Add(new List<int> { 2, 5, 6, 12, 14, 16, 18, 19, 20 });
@@ -32,55 +42,11 @@ namespace CourseProfessorAllocation
             arrList.Add(new List<int> { 2, 6, 8, 10, 14, 17, 19 });
             arrList.Add(new List<int> { 4, 5, 6, 9, 16, 17, 18, 19 });
             arrList.Add(new List<int> { 1, 6, 8, 10, 11, 17 });
-        }
-        public List<List<int>> GetMatchedList()
-        {
-            List<List<int>> ans = new List<List<int>>();
-            Dictionary<int, int> indexDic = new Dictionary<int, int>();
-            Dictionary<int, int> dic = new Dictionary<int, int>();
+        }        
 
-
-            for (int i = 0; i < arrList.Count; i++)
-            {
-                if (indexDic.ContainsKey(GetMatchedList(arrList[i])))
-                {
-                    indexDic[GetMatchedList(arrList[i])] = i;
-                }
-                else
-                {
-                    indexDic.Add(GetMatchedList(arrList[i]), i);
-                }
-
-            }
-            return ans;
-        }
-        private int GetMatchedList(List<int> list)
-        {
-            int matchPoint = 0;
-            int listIndex = 0;
-            int patternIndex = 0;
-
-            while (list.Count > listIndex && list[listIndex] <= pattern[pattern.Count - 1] && patternIndex < pattern.Count)
-            {
-                if (list[listIndex] == pattern[patternIndex])
-                {
-                    matchPoint++;
-                    listIndex++;
-                    patternIndex++;
-                }
-                else if (list[listIndex] < pattern[patternIndex])
-                {
-                    listIndex++;
-                }
-                else
-                {
-                    patternIndex++;
-                }
-
-            }
-
-            return matchPoint;
-        }
+        /// <summary>
+        /// Method to create professor dictionaries  
+        /// </summary>
         public void CreatProfessorHash()
         {
             List<Expertise> expList = db.GetExpertise();
@@ -102,6 +68,12 @@ namespace CourseProfessorAllocation
             }
         }
 
+        /// <summary>
+        /// Main Method to create professor dictionaries  
+        /// It contains keys for expertise level 3,4 and 5
+        /// </summary>
+        /// <param name="id">id of the professor</param>
+        /// <param name="exp">expertise</param>
         public void MakeMainDictionary(int id, Expertise exp)
         {
             Dictionary<int, List<int>> expDic = new Dictionary<int, List<int>>();
@@ -116,6 +88,13 @@ namespace CourseProfessorAllocation
                 mainDic.Add(id, expDic);
             }
         }
+
+        /// <summary>
+        /// Method to make expertise directory 
+        /// </summary>
+        /// <param name="expDic">expertise dictionary</param>
+        /// <param name="exp">expertise</param>
+        /// <returns>expertise dictionary</returns>
         public Dictionary<int, List<int>> MakeExpDictionary(Dictionary<int, List<int>> expDic, Expertise exp)
         {
             List<int> profList = new List<int>();
@@ -132,6 +111,10 @@ namespace CourseProfessorAllocation
             }
             return expDic;
         }
+        /// <summary>
+        /// Method to make course directory 
+        /// </summary>
+        /// <returns>Course Dictionary</returns>
         public Dictionary<int, Dictionary<int, int>> CreateCourseDictionary()
         {
             Dictionary<int, Dictionary<int, int>> courseDic = new Dictionary<int, Dictionary<int, int>>();
@@ -160,7 +143,10 @@ namespace CourseProfessorAllocation
 
             return courseDic;
         }
-
+        /// <summary>
+        /// Method to make professor directory
+        /// </summary>
+        /// <returns>rofessor Directory</returns>
         public Dictionary<int, Dictionary<int, int>> CreateProfessorsDictionary()
         {
             Dictionary<int, Dictionary<int, int>> profDic = new Dictionary<int, Dictionary<int, int>>();
@@ -189,6 +175,12 @@ namespace CourseProfessorAllocation
 
             return profDic;
         }
+        /// <summary>
+        /// Method to calculate intersection between two list
+        /// </summary>
+        /// <param name="sourceList"> source list</param>
+        /// <param name="patternList">pattern list</param>
+        /// <returns></returns>
         public List<int> GetCommonElements(List<int> sourceList, List<int> patternList)
         {
             List<int> ans = new List<int>();
@@ -220,17 +212,27 @@ namespace CourseProfessorAllocation
            
             return ans;
         }
+        /// <summary>
+        /// Wrapper main mathod to get professor for course 
+        /// </summary>
+        /// <param name="courseID">course id</param>
+        /// <returns>List to store maximum values </returns>
         public List<int> GetProfessorForCourse(int courseID)
         {
             List<int> max = new List<int>();
             max.Add(0);
             max.Add(0);
             max = GetMax(max, courseID, 5);
-
-
             return max;
         }
 
+        /// <summary>
+        /// Main mathod to get professor for course
+        /// </summary>
+        /// <param name="max"></param>
+        /// <param name="courseID">course id</param>
+        /// <param name="expLevel">expertise level</param>
+        /// <returns></returns>
         public List<int> GetMax(List<int> max, int courseID, int expLevel)
         {
 
@@ -328,7 +330,12 @@ namespace CourseProfessorAllocation
             return max;
         }
      
-
+        /// <summary>
+        /// Method to calculate match percentage 
+        /// </summary>
+        /// <param name="profId">professor Id</param>
+        /// <param name="topics">opics dictionary</param>
+        /// <returns></returns>
         public int CalculatePerc(int profId, Dictionary<int, int> topics)
         {
             int matchPercentage = 0;
@@ -345,11 +352,7 @@ namespace CourseProfessorAllocation
                         matchPercentage = ((exp * per) / 5 * 100) + matchPercentage;
                     }
 
-               }
-            
-
-
-
+               }           
             return matchPercentage;
         }
     }

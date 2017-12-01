@@ -23,30 +23,13 @@ namespace CourseProfessorAllocation
             List<Expertise> experts = db.GetExpertise();
             List<CourseTopic> courseTopics = db.GetCourseTopics();
 
-            //PrintData(courses,topics,professors,experts,courseTopics);            
+            PrintData(courses,topics,professors,experts,courseTopics);            
             GetWeightedTopics(courses, courseTopics);
 
-            //BST bst = new BST();
-            //bst.SortBST();
-
             Analyser analyser = new Analyser();
-            //analyser.GetMatchedList();
-
-            //analyser.CreatProfessorHash();
-
-            //Console.WriteLine("----------------------------------");
-
-            //Dictionary<int, Dictionary<int, int>> courseDic= analyser.CreateCourseDictionary();
-
-            //for (int index = 1; index <= 11; index++)
-            //{
-            //    Console.WriteLine("----------Course {0}---------",index);
-            //    foreach (var key in courseDic[index].Keys)
-            //    {
-            //        Console.WriteLine("Topic Id :{0} Percentage : {1}",key,courseDic[index][key]);
-            //    }
-            //}
-
+                    
+            Console.WriteLine("");
+            Console.WriteLine("----------- Result --------------");
             Dictionary<int, Dictionary<int, int>> dic = analyser.CreateCourseDictionary();
             List<int> profPerList = new List<int>();
             for (int courseID = 1; courseID < 12; courseID++)
@@ -54,11 +37,14 @@ namespace CourseProfessorAllocation
                  profPerList = analyser.GetProfessorForCourse(courseID);
                 Console.WriteLine("Course Id :{0} Professor {1} Percentage : {2}", courseID, profPerList[0], profPerList[1]/100);
             }
-           
-
-            Console.ReadLine();
+           Console.ReadLine();
         }
 
+        /// <summary>
+        /// Method to get matched porfessors with courses
+        /// </summary>
+        /// <param name="courses"></param>
+        /// <param name="courseTopics"></param>
         private static void GetWeightedTopics(List<Course> courses, List<CourseTopic> courseTopics)
         {
             Dictionary<int, int> weightedTopics = new Dictionary<int, int>();
@@ -79,6 +65,14 @@ namespace CourseProfessorAllocation
                 }
             }
         }
+        /// <summary>
+        /// Method to print all related data
+        /// </summary>
+        /// <param name="courses">List of Courses</param>
+        /// <param name="topics">List of Topics</param>
+        /// <param name="professors">List of professors</param>
+        /// <param name="experts">List of Experttise</param>
+        /// <param name="courseTopics">List of Course Topics</param>
         private static void PrintData(List<Course> courses, List<Topic> topics, List<Professor> professors, List<Expertise> experts, List<CourseTopic> courseTopics)
         {
             Console.WriteLine("--------------Courses-----------------");
@@ -86,16 +80,19 @@ namespace CourseProfessorAllocation
             {
                 Console.WriteLine("{0}-{1}", c.CourseId.ToString(), c.CourseName);
             }
+            Console.WriteLine("");
             Console.WriteLine("--------------Topics-----------------");
             foreach (var t in topics)
             {
                 Console.WriteLine("{0}-{1}", t.TopicId.ToString(), t.TopicName);
             }
+            Console.WriteLine("");
             Console.WriteLine("--------------Professors-----------------");
             foreach (var p in professors)
             {
                 Console.WriteLine("{0}-{1}", p.ID.ToString(), p.Name);
             }
+            Console.WriteLine("");
             Console.WriteLine("--------------Course with Topics-----------------");
             for (int courseIndex = 1; courseIndex <= courses.Count; courseIndex++)
             {
@@ -106,6 +103,7 @@ namespace CourseProfessorAllocation
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine("");
             Console.WriteLine("--------------Professors with Expertise-----------------");
             for (int professorIndex = 1; professorIndex <= professors.Count; professorIndex++)
             {

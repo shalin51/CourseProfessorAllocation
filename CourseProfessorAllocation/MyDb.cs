@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CourseProfessorAllocation
 {
+    /// <summary>
+    /// Database class returns all data related to project
+    /// </summary>
     public class MyDb
     {
         Course course = new Course();
@@ -21,6 +24,10 @@ namespace CourseProfessorAllocation
         List<CourseTopic> courseTopics;
         List<Topic> topics;
 
+        /// <summary>
+        /// Method to get courses
+        /// </summary>
+        /// <returns>list of courses</returns>
         public List<Course> GetCourses()
         {
             courses = new List<Course>();
@@ -81,6 +88,11 @@ namespace CourseProfessorAllocation
             });
             return courses;
         }
+
+        /// <summary>
+        /// Method to get list of expertises
+        /// </summary>
+        /// <returns>list of expertises</returns>
         public List<Expertise> GetExpertise()
         {
             expert = new List<Expertise>();
@@ -312,8 +324,7 @@ namespace CourseProfessorAllocation
                 ProfessorID = 2,
                 TopicID = 17,
                 LevelOfExpertise = 5
-            });
-            
+            });            
             expert.Add(new Expertise
             {
                 ProfessorID = 2,
@@ -743,6 +754,11 @@ namespace CourseProfessorAllocation
             });
             return expert;
         }
+
+        /// <summary>
+        /// Method to get list of professors
+        /// </summary>
+        /// <returns>list of professors</returns>
         public List<Professor> GetProfessors()
         {
             professors = new List<Professor>();
@@ -804,6 +820,11 @@ namespace CourseProfessorAllocation
             });
             return professors;
         }
+
+        /// <summary>
+        /// Method to get list of professors
+        /// </summary>
+        /// <returns>list of coursetopics</returns>
         public List<CourseTopic> GetCourseTopics()
         {
             courseTopics = new List<CourseTopic>();
@@ -1085,6 +1106,11 @@ namespace CourseProfessorAllocation
             });
             return courseTopics;
         }
+
+        /// <summary>
+        /// Method to get list of topics
+        /// </summary>
+        /// <returns>list of topics</returns>
         public List<Topic> GetTopics()
         {
             topics = new List<Topic>();
